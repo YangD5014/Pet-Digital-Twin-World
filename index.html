@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>猫咪探索 · 场景漫步</title>
+<style>
+  html, body { margin:0; height:100%; overflow:hidden; background:#0d1117;
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; }
+  #app { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+  #app.dragging { cursor:grabbing; }
+
+  /* 加载遮罩 */
+  #loading { position:fixed; inset:0; background:linear-gradient(160deg,#1a2233,#0d1117);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+    color:#e8edf4; z-index:50; transition:opacity .6s ease; }
+  #loading.hide { opacity:0; pointer-events:none; }
+  #loading .cat { font-size:56px; animation:bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  #loading .title { font-size:18px; letter-spacing:.2em; opacity:.9; }
+  #barWrap { width:260px; height:6px; border-radius:3px; background:#ffffff1f; overflow:hidden; }
+  #bar { height:100%; width:0%; border-radius:3px; background:linear-gradient(90deg,#7ec8ff,#f7b267); transition:width .25s ease; }
+  #pct { font-size:12px; opacity:.6; }
+
+  /* HUD */
+  #hud { position:fixed; inset:0; pointer-events:none; z-index:10; color:#fff; }
+  .chip { position:absolute; background:#101827c9; border:1px solid #ffffff22; backdrop-filter:blur(8px);
+    border-radius:12px; padding:10px 14px; font-size:13px; line-height:1.9; box-shadow:0 4px 18px #0006; }
+  #title { top:14px; left:14px; display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; letter-spacing:.08em; }
+  #hints { left:14px; bottom:14px; }
+  #hints b { color:#ffd97a; font-weight:600; margin-right:2px; }
+  #state { right:14px; bottom:14px; display:flex; align-items:center; gap:8px; font-size:13px; }
+  #stateDot { width:9px; height:9px; border-radius:50%; background:#9fe6a0; box-shadow:0 0 8px #9fe6a0aa; transition:background .2s; }
+
+  /* H 设置面板 */
+  #settings { top:14px; right:14px; width:250px; pointer-events:auto; display:none; }
+  #settings.open { display:block; }
+  #settings h3 { margin:0 0 8px; font-size:13px; font-weight:600; letter-spacing:.06em;
+    display:flex; justify-content:space-between; align-items:center; }
+  #settings h3 span { font-weight:400; font-size:11px; opacity:.55; }
+  #settings .row { display:flex; align-items:center; gap:8px; margin:7px 0; }
+  #settings .lbl { width:62px; font-size:12px; opacity:.85; flex:none; }
+  #settings .val { width:52px; font-size:11px; color:#ffd97a; text-align:right; flex:none;
+    font-variant-numeric:tabular-nums; }
+  #settings input[type=range] { flex:1; accent-color:#f7b267; height:3px; cursor:pointer; }
+  #cfgReset { margin-top:8px; width:100%; background:#ffffff1a; color:#e8edf4; border:1px solid #ffffff2e;
+    border-radius:8px; padding:6px 0; font-size:12px; cursor:pointer; }
+  #cfgReset:hover { background:#ffffff2a; }
+
+  #vignette { position:fixed; inset:0; pointer-events:none; z-index:5;
+    background:radial-gradient(ellipse at center, transparent 62%, #00000038 100%); }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js",
+    "three/addons/": "./vendor/addons/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="app"></canvas>
+<div id="vignette"></div>
+<div id="hud">
+  <div id="title" class="chip">🐾 猫咪探索 · 院子漫步</div>
+  <div id="hints" class="chip">
+    <b>WASD / 方向键</b> 移动　<b>Shift</b> 疾跑<br/>
+    <b>Space</b> 跳跃　<b>鼠标拖拽</b> 视角　<b>滚轮</b> 缩放　<b>R</b> 回到出生点
+  </div>
+  <div id="state" class="chip"><span id="stateDot"></span><span id="stateText">站立</span></div>
+  <div id="settings" class="chip">
+    <h3>⚙ 猫咪设置 <span>H 键开关</span></h3>
+    <div id="settingsRows"></div>
+    <button id="cfgReset">恢复默认</button>
+  </div>
+</div>
+<div id="errbox" style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:99;
+  background:#5b1a1ae6;color:#ffd7d7;font:12px/1.5 monospace;padding:6px 12px;border-radius:8px;
+  max-width:80%;display:none;white-space:pre-wrap;"></div>
+<div id="loading">
+  <div class="cat">🐱</div>
+  <div class="title">猫咪探索 · 加载中</div>
+  <div id="barWrap"><div id="bar"></div></div>
+  <div id="pct">0%</div>
+</div>
+<script type="module" src="./src/main.js?v=18"></script>
+</body>
+</html>
