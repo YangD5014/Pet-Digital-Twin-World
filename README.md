@@ -1,8 +1,12 @@
 # 猫咪探索 · 院子漫步（cat-game）
 
 Three.js 第三人称猫咪探索小游戏：在 `场景.glb`（Sketchfab 院子）里操控 `cat.glb`
-的奶牛猫漫步、疾跑、跳跃。骨骼动画 Walk/Run 取自 `猫咪绑定_动画1.blend`，
+的三花猫漫步、疾跑、跳跃。骨骼动画 Walk/Run 取自 `猫咪绑定_动画1.blend`，
 经 Blender 5.0.1 无头导出烘焙进 `data/cat.glb`。
+
+模型已做 **KHR_draco_mesh_compression** 压缩（scene 12.1→6.6MB，cat 4.5→3.2MB），
+加载时由 `DRACOLoader`（`vendor/draco/`）解码；压缩命令：
+`npx @gltf-transform/cli draco in.glb out.glb`。
 
 ## 运行
 
